@@ -26,17 +26,21 @@ document.addEventListener('DOMContentLoaded', ()=>{
     form.addEventListener('submit', async (e) => {
         e.preventDefault(); //evitamos que el formulario se envie al hacer submit
         const id = form.categoryId.value; //obtenemos el id del registro
-        const data = { //obteniendo los datos que vienen del formulario
-            nombreCategoria: form.categoryName.vale.trim(),
+        //obteniendo los datos que vienen del formulario
+        const data = { 
+            nombreCategoria: form.categoryName.value.trim(),
             descripcion: form.categoryDescription.value.trim()
         };
 
         try{
             //si hay un id se hara una actualización
             if(id){
+                alert("Actualizar")
+                console.log(data)
                 await updateCategory(id, data);
             }
             else{ //si no hay un id se esta haciendo una inserción
+                alert("Insertar")
                 await createCategories(data);
             }
 
@@ -49,24 +53,24 @@ document.addEventListener('DOMContentLoaded', ()=>{
     });
 
     async function loadCategories(){
-
         try{
-            const categories = await getCategories();
+            const categories= await getCategories();
+
+            console.log(categories);
             tableBody.innerHTML = ""; //vaciamos la tabla
 
-            if(!categories || categories.lenght == 0){
+            if(!categories || categories.length == 0){
                 tableBody.innerHTML = '<td colspan="5"> Actualmente no hay registros</td>';
                 return; //evitamos que se ejecute el reso del codigo
             }
-
+            
             categories.forEach((cat)=>{
-                const tr = document.createElement("tr");
+                const tr = document.createElement("tr");                
                 tr.innerHTML = `
                     <td>${cat.idCategoria}</td>
                     <td>${cat.nombreCategoria}</td>
                     <td>${cat.descripcion || ""}</td>
                     <td>${cat.fechaCreacion || ""}</td>
-                    <td>${cat.idCategoria}</td>
                     <td>
                         <button class="btn btn-sm btn-outline-secondary edit-btn">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
@@ -89,7 +93,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
                         </button>
                     </td>
                 `;
-
+                
                 //funcionaliad para botones de editar
                 tr.querySelector(".edit-btn").addEventListener("click", ()=>{
                     form.categoryId.value = cat.idCategoria;
@@ -98,9 +102,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
                     lblModal.textContent = "Editar categoria";
                     modal.show();
                 });
-
+                
                 //funcionalidad para botones de eliminar
-                tr.querySelector(".delete-btn").addEventListener('click', () =>{
+                tr.querySelector(".delete-btn").addEventListener("click", () =>{
                     if(confirm("¿Desea eliminar esta categoria?")){
                         deleteCategory(cat.idCategoria).then(loadCategories);
                     }
@@ -110,11 +114,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
             });
         }
-
         catch(err){
             console.error("Error cargando categorias: ", err);
-        }
-        
+        }        
     }
 
     function init(){
