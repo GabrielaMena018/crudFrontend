@@ -106,6 +106,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 //funcionalidad para botones de eliminar
                 tr.querySelector(".delete-btn").addEventListener("click", () =>{
                     if(confirm("¿Desea eliminar esta categoria?")){
+                        console.log(cat.idCategoria);
                         deleteCategory(cat.idCategoria).then(loadCategories);
                     }
                 });
